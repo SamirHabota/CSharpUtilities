@@ -25,6 +25,17 @@ namespace CSharpUtilities.Email
     */
     #endregion
 
+    #region Usage
+    /*
+    Inject the IEmailSender service via dependency injection where need be.
+
+    private readonly IEmailSender _emailSender;
+    public Constructor(IEmailSender emailSender){
+        _emailSender = emailSender;
+    }
+    */
+    #endregion
+
     #region GmailConfiguration
     //Allow less secure apps for your Google account
     #endregion

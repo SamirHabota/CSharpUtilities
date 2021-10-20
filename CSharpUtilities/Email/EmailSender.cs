@@ -18,12 +18,12 @@ namespace CSharpUtilities.Email
             _emailConfig = emailConfig;
         }
 
-        public void SendEmail(Message message)
-        {
-            var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage);
-        }
-
+        #region PrivateMethods
+        /// <summary>
+        /// Use to convert a Meesage object to a native MimeMessage object
+        /// </summary>
+        /// <param name="message" type="Message">defines the message object that will converted to a MimeMessage</param>
+        /// <returns>MimeMessage - the converted MimeMessage to be sent via email</returns>
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
@@ -31,8 +31,7 @@ namespace CSharpUtilities.Email
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = message.Content;
+            var bodyBuilder = new BodyBuilder { HtmlBody = message.Content };
 
             emailMessage.Body = bodyBuilder.ToMessageBody();
 
@@ -40,6 +39,10 @@ namespace CSharpUtilities.Email
 
         }
 
+        /// <summary>
+        /// Use to send an email via an smtp server
+        /// </summary>
+        /// <param name="emailMessage" type="MimeMessage">defines the MimeMessage to be sent via email</param>
         private void Send(MimeMessage emailMessage)
         {
             using (var client = new SmtpClient())
@@ -62,6 +65,16 @@ namespace CSharpUtilities.Email
                     client.Dispose();
                 }
             }
+        }
+        #endregion
+
+        /// <summary>
+        /// Use to send an email
+        /// </summary>
+        /// <param name="message" type="Message">defines the message object that will be sent via email</param>
+        public void SendEmail(Message message)
+        {
+            Send(CreateEmailMessage(message));
         }
     }
 }
