@@ -31,5 +31,17 @@ namespace CSharpUtilities.Manipulations
             }
             return censoredString;
         }
+
+        /// <summary>
+        /// Use to remove trailing characters from a string
+        /// </summary>
+        /// <param name="statement" type="string">the statement string from which the trailing characters need to be removed</param>
+        /// <param name="trailingAmount" type="int">the amount of trailing characters from the back that need to be removed</param>
+        /// <returns>string - the statement without any trailing characters</returns>
+        public static string RemoveTrailingCharacters(string statement, int trailingAmount = 2)
+        {
+            if (!string.IsNullOrWhiteSpace(statement) && statement.Length >= trailingAmount) return statement.Remove(statement.Length - trailingAmount);
+            else return statement;
+        }
     }
 }
