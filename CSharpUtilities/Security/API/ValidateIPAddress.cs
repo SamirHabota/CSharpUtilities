@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace CSharpUtilities.Security.API
     /// Use to block IP addresses from accessing the API
     /// Usage via filter: [TypeFilter(typeof(ValidateIPAddress), Arguments = new object[] { })]
     /// Define filters order: [TypeFilter(typeof(ValidateIPAddress), Arguments = new object[] { }, Order = 0)]
+    /// Setup inside of Startup.cs: services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
     /// This mehtod will store the client IP address to the HttpContext
     /// </summary>
     public class ValidateIPAddress : TypeFilterAttribute
@@ -44,13 +46,11 @@ namespace CSharpUtilities.Security.API
 
                     if (null != blacklistedIPs && blacklistedIPs.Count != 0)
                     {
-                        foreach (var ip in blacklistedIPs)
+                        var isThereIp = blacklistedIPs.FirstOrDefault(i => i == callerIp);
+                        if (isThereIp != null)
                         {
-                            if (ip == callerIp)
-                            {
-                                ForbiddenResponse(context);
-                                return;
-                            }
+                            ForbiddenResponse(context);
+                            return;
                         }
                     }
 

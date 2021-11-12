@@ -20,7 +20,7 @@ namespace CSharpUtilities.Security.JWT
             var jwtToken = HttpContextManipulation.GetFromContext<Dictionary<string, string>>("JWTToken", context.HttpContext);
 
             // Check if there is an jwt token injected
-            if (null != jwtToken && jwtToken.Keys.Count > 0)
+            if (jwtToken != null && jwtToken.Keys.Count > 0)
             {
                 // Inject user id info to context
                 context.HttpContext.Items.Add("UserId", jwtToken["sub"]);
