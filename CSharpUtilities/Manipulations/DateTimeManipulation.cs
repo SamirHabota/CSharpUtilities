@@ -25,6 +25,22 @@ namespace CSharpUtilities.Manipulations
             ShortTime = 1,
             LongTime
         }
+
+        public enum Period
+        {
+            Daily=1, 
+            Weekly, 
+            Monthly, 
+            Yearly
+        }
+
+        public enum TimeFrameType
+        {
+            Both = 1, 
+            Current, 
+            Previous
+        }
+
         #endregion
 
         #region MonthLists
@@ -59,6 +75,20 @@ namespace CSharpUtilities.Manipulations
             "November",
             "December",
         };
+        #endregion
+
+        #region TimeFrame
+        /// <summary>
+        /// Defines a model that will contain dates of a specific timeframe, based on a period
+        /// </summary>
+        public class TimeFrame
+        {
+            public DateTime From { get; set; }
+            public DateTime To { get; set; }
+            public DateTime PreviousFrom { get; set; }
+            public DateTime PreviousTo { get; set; }
+        }
+
         #endregion
         #endregion
 
@@ -145,6 +175,53 @@ namespace CSharpUtilities.Manipulations
         public static bool DateIsDay(DateTime dateToCheck, DayOfWeek dayOfWeek)
         {
             return dateToCheck.DayOfWeek == dayOfWeek;
+        }
+
+        /// <summary>
+        /// Returns dates inside a specific timeframe.
+        /// A timeframe is defined like the beggining and end of a period, either today, this month, week or year.
+        /// Includes current and previous optional date timestamps, calculated based on the period.
+        /// </summary>
+        /// <param name="period" type="Period">defines the desired period for date calculation</param>
+        /// <param name="timeFrameType" type="TimeFrameType">defines the timeframe type that should ne returned</param>
+        /// <returns>TimeFrame - calculated timeframes based on a period</returns>
+        public static TimeFrame GetTimeFrame(Period period, TimeFrameType timeFrameType = TimeFrameType.Both)
+        {
+            var today = GetCurrentDate();
+
+            switch (period)
+            {
+                case Period.Daily:
+                    return new TimeFrame() { 
+                        From = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? today : EmptyDate(),
+                        To = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? today : EmptyDate(), 
+                        PreviousFrom = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? today.AddDays(-1) : EmptyDate(), 
+                        PreviousTo = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? today.AddDays(-1) : EmptyDate()
+                    };
+                case Period.Weekly:
+                    return new TimeFrame() { 
+                        From = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? today.AddDays(-(int)today.DayOfWeek + 1) : EmptyDate(),
+                        To = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? today.AddDays(-(int)today.DayOfWeek).AddDays(7).AddSeconds(-1) : EmptyDate(),
+                        PreviousFrom = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? today.AddDays(-(int)today.DayOfWeek + 1).AddDays(-7) : EmptyDate(),
+                        PreviousTo = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? today.AddDays(-(int)today.DayOfWeek).AddDays(7).AddSeconds(-1).AddDays(-7) : EmptyDate()
+                    };
+                case Period.Monthly:
+                    return new TimeFrame() { 
+                        From = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, today.Month, 1) : EmptyDate(),
+                        To = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, today.Month, 1).AddMonths(1).AddDays(-1) : EmptyDate(),
+                        PreviousFrom = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, today.Month, 1).AddMonths(-1) : EmptyDate(),
+                        PreviousTo = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, today.Month, 1).AddDays(-1) : EmptyDate()
+                    };
+                case Period.Yearly:
+                    return new TimeFrame() { 
+                        From = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, 1, 1) : EmptyDate(),
+                        To = (timeFrameType == TimeFrameType.Current || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year, 12, 31) : EmptyDate(),
+                        PreviousFrom = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year - 1, 1, 1) : EmptyDate(),
+                        PreviousTo = (timeFrameType == TimeFrameType.Previous || timeFrameType == TimeFrameType.Both) ? new DateTime(today.Year - 1, 12, 31) : EmptyDate()
+                    };
+                default:
+                    return null;
+            }
         }
     }
 }
