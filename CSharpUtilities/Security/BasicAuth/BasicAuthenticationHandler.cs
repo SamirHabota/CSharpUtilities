@@ -14,10 +14,8 @@ namespace CSharpUtilities.Security.BasicAuth
     /// <summary>
     /// Use for basic API authorization
     /// Usage via filter: [Authorize]
-    /// Define accessible role to filter: [Authorize(Roles = "ROLE_FROM_CLAIM")] 
-    /// 
-    /// </summary>
-    /// 
+    /// Define accessible role to filter: [Authorize(Roles = "ROLE_FROM_CLAIM")]     /// 
+    /// </summary> 
 
     #region StartupConfiguration
     /*
@@ -30,7 +28,7 @@ namespace CSharpUtilities.Security.BasicAuth
 
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        //INJECT ACCOUNT SERVICE THAT WILL VALIDATE THE USERNAME AND PASSWORD FROM TH EHEADER
+        //INJECT ACCOUNT SERVICE THAT WILL VALIDATE THE USERNAME AND PASSWORD FROM THE HEADER
 
         public BasicAuthenticationHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
