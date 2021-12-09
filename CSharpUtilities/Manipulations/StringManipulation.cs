@@ -6,8 +6,36 @@ namespace CSharpUtilities.Manipulations
 {
     public class StringManipulation
     {
+
+        #region PrivateClassMembers
         private static readonly int _maximumCensorshipLength = 4;
         private static readonly int _minimumCensorshipLength = 2;
+        private static List<char> _charactersWithHandle = new List<char>() { 'Č', 'č', 'Ć', 'ć', 'Š', 'š', 'Ž', 'ž', 'Đ', 'đ' };
+
+        /// <summary>
+        /// Tries to convert and return a character without its handle.
+        /// Returns 'x' if original character has no handle
+        /// </summary>
+        /// <param name="character" type="char">desired character for handle removal</param>
+        /// <returns>string - character without handle in string format</returns>
+        private static string GetCharaceterWihoutHandle(char character)
+        {
+            return character switch
+            {
+                'Č' => "C",
+                'č' => "c",
+                'Ć' => "C",
+                'ć' => "c",
+                'Š' => "S",
+                'š' => "s",
+                'Ž' => "Z",
+                'ž' => "z",
+                'Đ' => "Dj",
+                'đ' => "dj",
+                _ => "x",
+            };
+        }
+        #endregion
 
         /// <summary>
         /// Will censor a string based on a set of censorship rules
@@ -42,6 +70,22 @@ namespace CSharpUtilities.Manipulations
         {
             if (!string.IsNullOrWhiteSpace(statement) && statement.Length >= trailingAmount) return statement.Remove(statement.Length - trailingAmount);
             else return statement;
+        }
+
+        /// <summary>
+        /// Returns a string with all its handle characters removed
+        /// </summary>
+        /// <param name="originalString" type="string">the desired string that needs handle characters removal</param>
+        /// <returns>stirng - string without any handle characters</returns>
+        public static string GetStringWihoutHandleCharacters(string originalString)
+        {
+            string stringWihoutHandleCharacters = string.Empty;
+            for (var i = 0; i < originalString.Length; i++)
+            {
+                if (_charactersWithHandle.Contains(originalString[i])) stringWihoutHandleCharacters += GetCharaceterWihoutHandle(originalString[i]);
+                else stringWihoutHandleCharacters += originalString[i];
+            }
+            return stringWihoutHandleCharacters;
         }
     }
 }
