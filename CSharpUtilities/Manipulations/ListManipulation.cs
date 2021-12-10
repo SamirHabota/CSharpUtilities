@@ -14,6 +14,7 @@ namespace CSharpUtilities.Manipulations
         public class PaginationModel<ListItemType>
         {
             public List<ListItemType> PaginatedList { get; set; }
+            public int TotalListAmountWas { get; set; }
             public int RequestedPage { get; set; }
             public int NumberOfPages { get; set; }
             public int NumberOfItemsPerPage { get; set; }
@@ -52,6 +53,7 @@ namespace CSharpUtilities.Manipulations
             int numberOfPages = (int)Math.Ceiling((double)list.Count / numberOfItemsPerPage);
             return new PaginationModel<ListItemType>()
             {
+                TotalListAmountWas = list.Count,
                 NumberOfItemsPerPage = numberOfItemsPerPage,
                 RequestedPage = page,
                 NumberOfPages = numberOfPages,
