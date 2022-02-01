@@ -223,5 +223,21 @@ namespace CSharpUtilities.Manipulations
                     return null;
             }
         }
+
+        /// <summary>
+        /// Returns a unique timestamp identificator, based on the current time.
+        /// </summary>
+        /// <returns>string - a unique timestamp id</returns>
+        public static string GetUniqueTimestampId()
+        {
+            DateTime timestamp = GetCurrentDate();
+
+            return timestamp.Month.ToString() +
+                   timestamp.Day.ToString() +
+                   timestamp.Hour.ToString() +
+                   timestamp.Minute.ToString() +
+                   timestamp.Second.ToString() +
+                   timestamp.Millisecond.ToString();
+        }
     }
 }
