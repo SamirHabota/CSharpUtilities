@@ -35,6 +35,47 @@ namespace CSharpUtilities.Manipulations
                 _ => "x",
             };
         }
+
+        /// <summary>
+        /// This function is based on the "Levenshtein Distance" algorithm.
+        /// The algorithm calculates the minimum number of single-character edits (insertions, deletions or substitutions) required to change one word into the other.
+        /// Theory: https://en.wikipedia.org/wiki/Levenshtein_distance
+        /// </summary>
+        /// <param name="source" type="string">the source string, representing the start of the transformation count</param>
+        /// <param name="target" type="string">the target string, representing the end of the transformation count</param>
+        /// <returns>int - number of steps needed to transform the source string into the target string</returns>
+        private static int ComputeStringDistance(string source, string target)
+        {
+            if ((source == null) || (target == null)) return 0;
+            if ((source.Length == 0) || (target.Length == 0)) return 0;
+            if (source == target) return source.Length;
+
+            int sourceWordCount = source.Length;
+            int targetWordCount = target.Length;
+
+            if (sourceWordCount == 0)
+                return targetWordCount;
+
+            if (targetWordCount == 0)
+                return sourceWordCount;
+
+            int[,] distance = new int[sourceWordCount + 1, targetWordCount + 1];
+
+            for (int i = 0; i <= sourceWordCount; distance[i, 0] = i++);
+            for (int j = 0; j <= targetWordCount; distance[0, j] = j++);
+
+            for (int i = 1; i <= sourceWordCount; i++)
+            {
+                for (int j = 1; j <= targetWordCount; j++)
+                {
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+
+                    distance[i, j] = Math.Min(Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1), distance[i - 1, j - 1] + cost);
+                }
+            }
+
+            return distance[sourceWordCount, targetWordCount];
+        }
         #endregion
 
         /// <summary>
@@ -86,6 +127,21 @@ namespace CSharpUtilities.Manipulations
                 else stringWihoutHandleCharacters += originalString[i];
             }
             return stringWihoutHandleCharacters;
+        }
+
+        /// <summary>
+        /// Returns a decimal calculated number that represents how similar the source and target strings forwarded as parameters are
+        /// </summary>
+        /// <param name="source" type="string">the source string, representing the start of the similarity calculation</param>
+        /// <param name="target" type="string">the target string, representing the end of the similarity calculation</param>
+        /// <returns>double - a precise decimal number from 0 to 1, representing the two strings similarity, 1 meaning identical</returns>
+        public static double CalculateStringSimilarity(string source, string target)
+        {
+            if ((source == null) || (target == null)) return 0.0;
+            if ((source.Length == 0) || (target.Length == 0)) return 0.0;
+            if (source == target) return 1.0;
+
+            return (1.0 - ((double)ComputeStringDistance(source, target) / (double)Math.Max(source.Length, target.Length)));
         }
     }
 }
