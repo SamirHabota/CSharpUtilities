@@ -77,9 +77,9 @@ namespace CSharpUtilities.Manipulations
                 if (responseData.IsSuccessStatusCode)
                 {
                     ResponseType responseBody = JsonConvert.DeserializeObject<ResponseType>(await responseData.Content.ReadAsStringAsync());
-                    return new ResponseModel<ResponseType>() { Response = responseBody, Success = true, Message = "Data fetched successfully", StatusCode = responseData.StatusCode };
+                    return new ResponseModel<ResponseType>() { Response = responseBody, Success = true, Message = "Data forwarded successfully", StatusCode = responseData.StatusCode };
                 }
-                else return new ResponseModel<ResponseType>() { Response = default, Success = false, Message = "Error while fetching the data", StatusCode = responseData.StatusCode };
+                else return new ResponseModel<ResponseType>() { Response = default, Success = false, Message = "Error while forwarding the data", StatusCode = responseData.StatusCode };
             }
             catch (Exception ex)
             {
