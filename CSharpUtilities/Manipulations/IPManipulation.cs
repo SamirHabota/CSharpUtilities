@@ -36,8 +36,6 @@ namespace CSharpUtilities.Manipulations
         {
             public string Country { get; set; }
 
-            public string County { get; set; }
-
             public string Region { get; set; }
 
             public string Continent { get; set; }
